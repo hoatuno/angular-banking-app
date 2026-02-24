@@ -1,0 +1,31 @@
+<div class="p-8 bg-gray-100 min-h-screen">
+  <h1 class="text-3xl font-bold mb-6">Banking Dashboard</h1>
+
+  <!-- Balance Card -->
+  <div class="bg-white shadow-md rounded-xl p-6 mb-8">
+    <h2 class="text-lg text-gray-500">Account Balance</h2>
+    <p class="text-2xl font-bold text-green-600">{{ balance | number }} VND</p>
+  </div>
+
+  <!-- Transactions -->
+  <div class="bg-white shadow-md rounded-xl p-6">
+    <h2 class="text-lg font-semibold mb-4">Recent Transactions</h2>
+
+    <div *ngFor="let item of transactions" class="flex justify-between border-b py-3">
+      <span>{{ item.description }}</span>
+
+      <span
+        [ngClass]="{
+          'text-red-500': item.amount < 0,
+          'text-green-600': item.amount > 0,
+        }"
+      >
+        {{ item.amount | number }} VND
+      </span>
+    </div>
+
+    @if (balance < 10000000) {
+      <app-ui-button label="Add 1M" (clicked)="addMoney()"> </app-ui-button>
+    }
+  </div>
+</div>
