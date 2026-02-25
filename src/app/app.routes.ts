@@ -1,11 +1,41 @@
 import { Routes } from '@angular/router';
-
-import { DashboardComponent } from './features/dashboard/dashboard';
-import { TransactionsComponent } from './features/transactions/transactions';
-import { ProfileComponent } from './features/profile/profile';
+import { MainLayoutComponent } from './layout/main-layout/main-layout';
 
 export const routes: Routes = [
-    { path: '', component: DashboardComponent },
-    { path: 'transactions', component: TransactionsComponent },
-    { path: 'profile', component: ProfileComponent },
+
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard')
+            .then(m => m.DashboardComponent)
+      },
+
+      {
+        path: 'transactions',
+        loadComponent: () =>
+          import('./features/transactions/transactions-page/transactions-page')
+            .then(m => m.TransactionsPageComponent)
+      },
+
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile-page/profile-page')
+            .then(m => m.ProfilePageComponent)
+      }
+
+    ]
+  }
+
 ];

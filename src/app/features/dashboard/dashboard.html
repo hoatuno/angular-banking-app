@@ -1,10 +1,25 @@
 <div class="p-8 bg-gray-100 min-h-screen">
   <h1 class="text-2xl font-bold">
-    {{ account().name }}
+    @if (account()) {
+      <h1>
+        {{ account()!.name }}
+      </h1>
+
+      <p>
+        {{ account()!.balance | number }}
+      </p>
+    }
   </h1>
 
-  <p class="text-xl mt-2">{{ account().balance | number }} VND</p>
-
-  <ui-button (clicked)="addMoney()" label="Add 1M" variant="primary" size="md"></ui-button>
+  <p class="text-xl mt-2">{{ account()?.balance | number }} VND</p>
+  <div class="flex gap-2">
+    <ui-button (clicked)="addMoney()" label="Add 1M" variant="primary" size="md"></ui-button>
+    <ui-button
+      (clicked)="withdrawMoney()"
+      label="Withdraw 1M"
+      variant="secondary"
+      size="md"
+    ></ui-button>
+  </div>
   <app-transaction-list />
 </div>

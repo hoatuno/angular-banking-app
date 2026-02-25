@@ -1,35 +1,35 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Transaction } from '../models/transaction';
+import { ApiService } from './api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
 
-  private _transactions = signal<Transaction[]>([
-    {
-      id: '1',
-      title: 'Salary',
-      amount: 15000000,
-      date: '2026-02-24',
-      type: 'credit'
-    },
-    {
-      id: '2',
-      title: 'Coffee',
-      amount: -50000,
-      date: '2026-02-24',
-      type: 'debit'
-    },
-    {
-      id: '3',
-      title: 'Rent',
-      amount: -4000000,
-      date: '2026-02-23',
-      type: 'debit'
-    }
-  ]);
+  private api = inject(ApiService);
+
+  private _transactions = signal<Transaction[]>([]);
 
   transactions = this._transactions.asReadonly();
+
+  load() {
+
+    this.api.getTransactions().subscribe(list => {
+
+      this._transactions.set(list);
+
+    });
+
+  }
+
+  add(tx: Transaction) {
+
+    this._transactions.update(list => [
+      tx,
+      ...list
+    ]);
+
+  }
 
 }
