@@ -1,26 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AccountService } from '../../core/services/account';
 import { UiButtonComponent } from '../../shared/components/ui-button/ui-button';
+import { TransactionListComponent } from '../transactions/transaction-list/transaction-list';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, UiButtonComponent],
+  imports: [CommonModule, UiButtonComponent, TransactionListComponent],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
 export class DashboardComponent {
+  accountService = inject(AccountService);
 
-  balance = 0;
-
-  transactions = [
-    { id: 1, description: 'Coffee', amount: -50000 },
-    { id: 2, description: 'Salary', amount: 15000000 },
-    { id: 3, description: 'Shopping', amount: -1200000 }
-  ];
+  account = this.accountService.account;
 
   addMoney() {
-    this.balance += 1000000;
+    this.accountService.deposit(1000000);
   }
 
 }
