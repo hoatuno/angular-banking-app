@@ -1,25 +1,30 @@
 <div class="p-8 bg-gray-100 min-h-screen">
-  <h1 class="text-2xl font-bold">
-    @if (account()) {
-      <h1>
-        {{ account()!.name }}
-      </h1>
+  @if (store.accountsResource.isLoading()) {
+    <p>Loading...</p>
+  }
 
-      <p>
-        {{ account()!.balance | number }}
-      </p>
-    }
-  </h1>
+  @if (store.accountsResource.error(); as error) {
+    <p>Error: {{ error }}</p>
+  }
 
-  <p class="text-xl mt-2">{{ account()?.balance | number }} VND</p>
-  <div class="flex gap-2">
-    <ui-button (clicked)="addMoney()" label="Add 1M" variant="primary" size="md"></ui-button>
-    <ui-button
-      (clicked)="withdrawMoney()"
-      label="Withdraw 1M"
-      variant="secondary"
-      size="md"
-    ></ui-button>
-  </div>
-  <app-transaction-list />
+  @if (store.account(); as account) {
+    <h1 class="text-2xl font-bold">{{ account.name }}</h1>
+    <div class="font-bold">{{ account.balance | number }} VND</div>
+    <div class="flex gap-2">
+      <ui-button
+        (clicked)="store.deposit(1000000)"
+        label="Add 1M"
+        variant="primary"
+        size="md"
+      ></ui-button>
+      <ui-button
+        (clicked)="store.withdraw(1000000)"
+        label="Withdraw 1M"
+        variant="secondary"
+        size="md"
+      ></ui-button>
+    </div>
+  }
+
+  <app-transaction-list></app-transaction-list>
 </div>

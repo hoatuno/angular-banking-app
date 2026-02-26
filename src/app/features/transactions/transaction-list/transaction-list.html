@@ -1,25 +1,25 @@
-<div class="mt-6">
-  <h2 class="text-xl font-bold mb-3">Transactions</h2>
+<div class="mt-6 h-160 overflow-y-auto border rounded p-2">
+  @if (store.transactions(); as transactions) {
+    @for (tx of transactions; track tx.id) {
+      <div class="flex justify-between p-3 border rounded mb-2 bg-white">
+        <div>
+          <div class="font-semibold">
+            {{ tx.type }}
+          </div>
 
-  @for (tx of transactions(); track tx.id) {
-    <div class="flex justify-between p-3 border rounded mb-2">
-      <div>
-        <div class="font-semibold">
-          {{ tx.title }}
+          <div class="text-sm text-gray-500">
+            {{ tx.createdAt }}
+          </div>
         </div>
 
-        <div class="text-sm text-gray-500">
-          {{ tx.date }}
+        <div
+          class="font-bold"
+          [class.text-green-600]="tx.type === 'deposit'"
+          [class.text-red-600]="tx.type === 'withdraw'"
+        >
+          {{ tx.amount | number }} VND
         </div>
       </div>
-
-      <div
-        class="font-bold"
-        [class.text-green-600]="tx.type === 'credit'"
-        [class.text-red-600]="tx.type === 'debit'"
-      >
-        {{ tx.amount | number }} VND
-      </div>
-    </div>
+    }
   }
 </div>

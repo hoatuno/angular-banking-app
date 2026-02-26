@@ -1,31 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
+import { AccountStore } from '../../domains/account/account.store';
+import { UiButtonComponent } from '../../shared/components/ui-button/ui-button';
+import { TransactionListComponent } from '../transactions/transaction-list/transaction-list';
 import { DecimalPipe } from '@angular/common';
 
-import { AccountService } from '../../core/services/account';
-import { TransactionService } from '../../core/services/transaction';
-import { TransactionListComponent } from '../transactions/transaction-list/transaction-list';
-import { UiButtonComponent } from '../../shared/components/ui-button/ui-button';
-
 @Component({
-  selector: 'app-dashboard',
-  imports: [DecimalPipe, UiButtonComponent, TransactionListComponent],
+  standalone: true,
   templateUrl: './dashboard.html',
+  imports: [UiButtonComponent, TransactionListComponent, DecimalPipe],
 })
-export class DashboardComponent implements OnInit {
-  accountService = inject(AccountService);
-  transactionService = inject(TransactionService);
-
-  account = this.accountService.account;
-
-  ngOnInit() {
-    this.accountService.load();
-    console.log(this.account());
-  }
-
-  addMoney() {
-    this.accountService.deposit(1000000);
-  }
-  withdrawMoney() {
-    this.accountService.withdraw(1000000);
-  }
+export class DashboardComponent {
+  store = inject(AccountStore);
 }
