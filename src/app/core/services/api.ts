@@ -1,27 +1,38 @@
-import { Injectable } from '@angular/core';
-import { delay, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
 
-import { MOCK_ACCOUNT } from '../mocks/accounts.mock';
-import { MOCK_TRANSACTIONS } from '../mocks/transactions.mock';
+import { HttpClient } from '@angular/common/http';
+import { Account } from '../models/account';
+import { Transaction } from '../models/transaction';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
+  private http = inject(HttpClient);
 
+  private baseUrl = 'http://localhost:3000';
+
+  /** GET /accounts */
   getAccount() {
-    return of(MOCK_ACCOUNT).pipe(delay(500));
+    return this.http.get<Account[]>(`${this.baseUrl}/accounts`);
   }
 
-  getTransactions() {
-    return of(MOCK_TRANSACTIONS).pipe(delay(500));
+  /** GET /transactions */
+  getTransactions(accountId: string) {
+    return this.http.get<Transaction[]>(`${this.baseUrl}/transactions`, {
+      params: {
+        accountId,
+      },
+    });
   }
 
-  withdraw(amount: number) {
-    // mock response từ server
-    return of({
-      success: true,
-      amount
-    }).pipe(delay(500));
+  /** POST withdraw */
+  withdraw(accountId: string, amount: number) {
+    return this.http.post(`${this.baseUrl}/accounts/${accountId}/withdraw`, { amount });
+  }
+
+  /** POST deposit */
+  deposit(accountId: string, amount: number) {
+    return this.http.post(`${this.baseUrl}/accounts/${accountId}/deposit`, { amount });
   }
 }

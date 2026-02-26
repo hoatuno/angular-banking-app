@@ -8,15 +8,10 @@ import { UiButtonComponent } from '../../shared/components/ui-button/ui-button';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    DecimalPipe,
-    UiButtonComponent,
-    TransactionListComponent
-  ],
-  templateUrl: './dashboard.html'
+  imports: [DecimalPipe, UiButtonComponent, TransactionListComponent],
+  templateUrl: './dashboard.html',
 })
 export class DashboardComponent implements OnInit {
-
   accountService = inject(AccountService);
   transactionService = inject(TransactionService);
 
@@ -24,7 +19,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.accountService.load();
-    this.transactionService.load();
+    console.log(this.account());
   }
 
   addMoney() {
@@ -33,5 +28,4 @@ export class DashboardComponent implements OnInit {
   withdrawMoney() {
     this.accountService.withdraw(1000000);
   }
-
 }

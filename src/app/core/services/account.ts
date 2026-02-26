@@ -1,51 +1,44 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { Account } from '../models/account';
 import { ApiService } from './api';
-import { TransactionService } from './transaction';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AccountService {
-
   private api = inject(ApiService);
-  private transactionService = inject(TransactionService);
 
   private _account = signal<Account | null>(null);
 
   account = this._account.asReadonly();
 
+  /** load account */
   load() {
-
-    this.api.getAccount().subscribe(account => {
-      this._account.set(account);
+    this.api.getAccount().subscribe((account) => {
+      this._account.set(account[0]);
     });
-
   }
 
+  /** deposit via API */
   deposit(amount: number) {
+    const acc = this._account();
 
-    this._account.update(acc => {
-      if (!acc) return acc;
+    if (!acc) return;
 
-      return {
-        ...acc,
-        balance: acc.balance + amount
-      };
+    this.api.deposit(acc.id, amount).subscribe((res: any) => {
+      this._account.update((a) =>
+        a
+          ? {
+              ...a,
+              balance: res.balance,
+            }
+          : null,
+      );
     });
-
-    this.transactionService.add({
-      id: crypto.randomUUID(),
-      title: 'Deposit',
-      amount,
-      date: new Date().toISOString(),
-      type: 'credit'
-    });
-
   }
 
+  /** withdraw via API */
   withdraw(amount: number) {
-
     const acc = this._account();
 
     if (!acc) return;
@@ -55,29 +48,15 @@ export class AccountService {
       return;
     }
 
-    this.api.withdraw(amount).subscribe(() => {
-
-      // update balance
-      this._account.update(acc => {
-        if (!acc) return acc;
-
-        return {
-          ...acc,
-          balance: acc.balance - amount
-        };
-      });
-
-      // add transaction
-      this.transactionService.add({
-        id: crypto.randomUUID(),
-        title: 'Withdraw',
-        amount: -amount,
-        date: new Date().toISOString(),
-        type: 'debit'
-      });
-
+    this.api.withdraw(acc.id, amount).subscribe((res: any) => {
+      this._account.update((a) =>
+        a
+          ? {
+              ...a,
+              balance: res.balance,
+            }
+          : null,
+      );
     });
-
   }
-
 }
